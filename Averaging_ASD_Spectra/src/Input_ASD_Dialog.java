@@ -162,9 +162,10 @@ public class Input_ASD_Dialog implements ActionListener{
 					while((record = reader.readNext()) != null) {
 						//Each line of the file contains a spectra, with the first index as Sample Name
 						double[] tempArray = new double[record.length -1];
-						for( int i = 1;i<2152;i++){ //Read in spectral values
-							
-							tempArray[i] = (Double.parseDouble((record[i])));
+						for( int i = 1;i<record.length;i++){ //Read in spectral values
+
+							tempArray[i-1] = (Double.parseDouble((record[i])));
+							System.out.println(tempArray[i-1]);
 						}						
 						allSpectra.add(new Spectra(record[0],tempArray)); //create a spectra object and add to allSpectra list
 					}
