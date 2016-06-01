@@ -194,7 +194,7 @@ public class GUI_ASD_Avg extends JPanel implements ActionListener  {
 			//Legend
 			LegendTitle legend = chart.getLegend(); //Grab legend so can customize
 			legend.setPosition(RectangleEdge.RIGHT); //Move legend to the right
-			
+
 			//Axis Properties
 			NumberAxis domain = (NumberAxis) xyPlot.getDomainAxis();
 			

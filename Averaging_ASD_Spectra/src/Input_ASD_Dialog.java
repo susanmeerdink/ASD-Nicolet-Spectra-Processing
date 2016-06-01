@@ -38,6 +38,8 @@ public class Input_ASD_Dialog implements ActionListener{
 	private ArrayList<Spectra> allSpectra = new ArrayList<Spectra>();
 	private ArrayList<SpectraFileList> allSpectraFileList = new ArrayList<SpectraFileList>();
 	private FileOutputStream fout;
+
+	private String dir = System.getProperty("user.dir"); //Get current working directory
 	
 	public Input_ASD_Dialog(){
 		
@@ -153,19 +155,19 @@ public class Input_ASD_Dialog implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// Browses to file that contains the spectra, opens it, and saves it as variable
 		if(e.getSource() == button1){
-			JFileChooser selectfile = new JFileChooser(); //create a file chooser window
+			JFileChooser selectfile = new JFileChooser(dir); //create a file chooser window
 			int result = selectfile.showOpenDialog(frame); //and an integer representing the button clicked
 			if(result == JFileChooser.APPROVE_OPTION) {
 				try{	
 					CSVReader reader = new CSVReader(new FileReader(selectfile.getSelectedFile().getPath()), ','); // read in the file
+					dir = selectfile.getSelectedFile().getPath(); //set working directory to path name
+					dir = dir.replace(selectfile.getSelectedFile().getName(),"");
 					String[] record;
 					while((record = reader.readNext()) != null) {
 						//Each line of the file contains a spectra, with the first index as Sample Name
 						double[] tempArray = new double[record.length -1];
 						for( int i = 1;i<record.length;i++){ //Read in spectral values
-
 							tempArray[i-1] = (Double.parseDouble((record[i])));
-							System.out.println(tempArray[i-1]);
 						}						
 						allSpectra.add(new Spectra(record[0],tempArray)); //create a spectra object and add to allSpectra list
 					}
@@ -181,7 +183,7 @@ public class Input_ASD_Dialog implements ActionListener{
 		}
 		//Browses to file that contains the spectra file list, opens, and saves it as variable
 		if(e.getSource() == button2){
-			JFileChooser selectfile = new JFileChooser(); //create a file chooser window
+			JFileChooser selectfile = new JFileChooser(dir); //create a file chooser window
 			int result = selectfile.showOpenDialog(frame); //and an integer representing the button clicked
 			if(result == JFileChooser.APPROVE_OPTION) {
 				try{	
@@ -204,15 +206,16 @@ public class Input_ASD_Dialog implements ActionListener{
 		}
 		//Creates a file which will be used to save averaged spectra
 		if(e.getSource() == button3){
-			JFileChooser selectfile = new JFileChooser(); //create a file chooser window
+			JFileChooser selectfile = new JFileChooser(dir); //create a file chooser window
 			int result = selectfile.showSaveDialog(frame); //and an integer representing the button clicked
 			if(result == JFileChooser.APPROVE_OPTION) {
-				try{	
-					if (selectfile.getSelectedFile().getName().contains(".CSV")){
+				try{
+					if (selectfile.getSelectedFile().getPath().contains(".csv")){ //If the file name already has .csv don't add it
+
 						fout = new FileOutputStream(selectfile.getSelectedFile());
 						textBox3.setText(selectfile.getSelectedFile().getPath());
 					}
-					else{
+					else{ //If the file path is missing .csv add it
 						fout = new FileOutputStream(selectfile.getSelectedFile()+".csv");
 						textBox3.setText(selectfile.getSelectedFile().getPath()+".csv");
 					}
@@ -222,7 +225,6 @@ public class Input_ASD_Dialog implements ActionListener{
 					ex.printStackTrace();
 				}
 			}
-			textBox3.setText(selectfile.getSelectedFile().getPath()+".csv");
 		}
 		//Closes program
 		if(e.getSource() == buttonCancel){
