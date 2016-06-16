@@ -1,6 +1,11 @@
 *.csv
 *.txt
 
+#Ignoring Java environement files
+*.xml
+*.iml
+*.class
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
