@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -158,20 +160,24 @@ public class Input_ASD_Dialog implements ActionListener{
 			JFileChooser selectfile = new JFileChooser(dir); //create a file chooser window
 			int result = selectfile.showOpenDialog(frame); //and an integer representing the button clicked
 			if(result == JFileChooser.APPROVE_OPTION) {
-				try{	
-					CSVReader reader = new CSVReader(new FileReader(selectfile.getSelectedFile().getPath()), ','); // read in the file
+				try{
 					dir = selectfile.getSelectedFile().getPath(); //set working directory to path name
 					dir = dir.replace(selectfile.getSelectedFile().getName(),"");
-					String[] record;
-					while((record = reader.readNext()) != null) {
-						//Each line of the file contains a spectra, with the first index as Sample Name
-						double[] tempArray = new double[record.length -1];
-						for( int i = 1;i<record.length;i++){ //Read in spectral values
-							tempArray[i-1] = (Double.parseDouble((record[i])));
-						}						
-						allSpectra.add(new Spectra(record[0],tempArray)); //create a spectra object and add to allSpectra list
+					int lineNumber = 0; //used to skip the first line of the file
+					for (String line : Files.readAllLines(Paths.get(selectfile.getSelectedFile().getPath()))){
+						if (lineNumber != 0){ //If it isn't the first line execute
+							String[] record;
+							record = line.split(","); //Split the line based on commas
+							//Each line of the file contains a spectra, with the first index as Sample Name
+							double[] tempArray = new double[record.length -1];
+							for( int i = 1;i<record.length;i++){ //Read in spectral values
+								tempArray[i-1] = (Double.parseDouble((record[i])));
+							}
+							allSpectra.add(new Spectra(record[0],tempArray)); //create a spectra object and add to allSpectra list
+						}
+						lineNumber = lineNumber +1; //Advance conter
 					}
-					reader.close();
+					//reader.close();
 					textBox1.setText(selectfile.getSelectedFile().getPath());
 					
 				}
