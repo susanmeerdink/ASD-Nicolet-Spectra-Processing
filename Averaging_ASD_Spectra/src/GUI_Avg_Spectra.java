@@ -197,14 +197,16 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 				legend.setPosition(RectangleEdge.RIGHT); //Move legend to the right
 				
 				//Axis Properties
-				NumberAxis domain = (NumberAxis) xyPlot.getDomainAxis();
+				NumberAxis domain = (NumberAxis) xyPlot.getDomainAxis(); //Get X axis
 				
 				if(chartType == 1){ //ASD/VSWIR spectra
 					domain.setRange(0.35, 2.5);
 			        domain.setTickUnit(new NumberTickUnit(0.1));
 			        domain.setVerticalTickLabels(true);
-			        NumberAxis range = (NumberAxis) xyPlot.getRangeAxis();
+			        NumberAxis range = (NumberAxis) xyPlot.getRangeAxis(); //Get y Axis
+					range.setRange(0,1); //Set Y Axis to 0 and 1
 			        range.setTickUnit(new NumberTickUnit(0.05));
+
 				}
 				else if (chartType == 2){ //Nicolet/TIR Spectra
 					domain.setRange(2.5, 15.5);
