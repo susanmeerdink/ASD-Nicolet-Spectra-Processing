@@ -369,6 +369,9 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 					}
 					//Call createDataset method so that the new samples can be displayed on chart
 					chart.getXYPlot().setDataset(createDataset());
+
+					allList.clearSelection();//Clear selected items
+					dispList.clearSelection();//Clear selected items
 				}
 				
 				//Action Performed if you hit the Button that moves items from displayed to not displayed
@@ -408,6 +411,9 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 					}
 					//Call createDataset method so that the new samples can be displayed on chart
 					chart.getXYPlot().setDataset(createDataset());
+
+					allList.clearSelection();//Clear selected items
+					dispList.clearSelection();//Clear selected items
 				}
 				//Closes program and file
 				if (e.getSource() == buttonCancel){
