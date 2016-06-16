@@ -53,6 +53,7 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 			//Member Variables for Chart
 			private JFreeChart chart;
 			private ChartPanel chartPanel ;
+			private LegendTitle legend;
 			final static boolean shouldFill = true;
 			private String chartTitle = "Visualize Spectra";
 			private int chartType = 0; // 1 = ASD/VSWIR 2 = Nicolet/TIR
@@ -193,7 +194,8 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 				XYPlot xyPlot = (XYPlot) chart.getPlot();
 				
 				//Legend
-				LegendTitle legend = chart.getLegend(); //Grab legend so can customize
+				//LegendTitle legend = chart.getLegend(); //Grab legend so can customize
+				legend = chart.getLegend(); //Grab legend so can customize
 				legend.setPosition(RectangleEdge.RIGHT); //Move legend to the right
 				
 				//Axis Properties
@@ -286,9 +288,14 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 				}
 				//Identifies ASD/VSWIR spectra and executes this code
 				if (chartType == 1){
-					for (int i = allSpectraFileList.get(currentSample).getBegin();i<(allSpectraFileList.get(currentSample).getEnd()+1);i++){
+					for (int i = allSpectraFileList.get(currentSample).getBegin();i<(allSpectraFileList.get(currentSample).getEnd()+1);i++) {
 						dispListModel.addElement(allSpectra.get(i).getSampleID());
 						displaySpectra.add(allSpectra.get(i));
+						if (i > 20){ //If there are more than this number of spectra to be displayed remove the legend
+							legend.setVisible(false);
+						} else{
+							legend.setVisible(true);
+						}
 					}
 				}
 				//Call createDataset method so that the new samples can be displayed on chart
@@ -333,6 +340,7 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 						dispListModel.addElement(selectedList.get(j));
 						allListModel.removeElement(selectedList.get(j));
 					}
+
 					//Loop through displayed List and find Spectra that matches name and put spectra in the Displayed Spectra ArrayList
 					displaySpectra.removeAll(displaySpectra); //Remove all spectra previously located list
 					if(currentSample < allSpectraFileList.size() - 1){
@@ -342,6 +350,11 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 									displaySpectra.add(allSpectra.get(i));
 								}
 							}
+						}
+						if (dispListModel.getSize() > 20){ //If there are more than this number of spectra to be displayed remove the legend
+							legend.setVisible(false);
+						} else{
+							legend.setVisible(true);
 						}
 					}
 					//Use at the end to view averaged samples
@@ -376,6 +389,11 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 									displaySpectra.add(allSpectra.get(i));
 								}
 							}
+						}
+						if (dispListModel.getSize() > 20){ //If there are more than this number of spectra to be displayed remove the legend
+							legend.setVisible(false);
+						} else{
+							legend.setVisible(true);
 						}
 					}
 					//Use at the end to view averaged samples
