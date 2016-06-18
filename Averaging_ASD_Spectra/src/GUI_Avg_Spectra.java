@@ -47,6 +47,7 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 	private ArrayList<Spectra> stdAllSpectra = new ArrayList<Spectra>(); //Holds the averaged spectra
 	private int currentSample = 0;
 	private FileOutputStream fout;
+	private boolean finalFlag = false;
 
 	private ArrayList<Spectra> displaySpectra = new ArrayList<Spectra>();
 	private XYSeriesCollection data = new XYSeriesCollection();
@@ -350,7 +351,8 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 					dispListModel.addElement(avgAllSpectra.get(i).getSampleID());
 					displaySpectra.add(avgAllSpectra.get(i));
 				}
-						
+				finalFlag = true; //Set the final display flag to true
+
 				//Call createDataset method so that the new samples can be displayed on chart
 				chart.getXYPlot().setDataset(createDataset());
 			}
@@ -373,7 +375,7 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 
 					//Loop through displayed List and find Spectra that matches name and put spectra in the Displayed Spectra ArrayList
 					displaySpectra.removeAll(displaySpectra); //Remove all spectra previously located list
-					if(currentSample < allSpectraFileList.size() - 1){
+					if(finalFlag == false){
 						for (int k = 0; k < dispListModel.getSize();k++){
 							for (int i = 0; i<allSpectra.size();i++){
 								if (dispListModel.getElementAt(k).toString() == allSpectra.get(i).getSampleID()){
@@ -438,6 +440,11 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 								}
 							}
 						}
+						if (dispListModel.getSize() > 20){ //If there are more than this number of spectra to be displayed remove the legend
+							legend.setVisible(false);
+						} else{
+							legend.setVisible(true);
+						}
 					}
 					//Call createDataset method so that the new samples can be displayed on chart
 					chart.getXYPlot().setDataset(createDataset());
@@ -469,10 +476,13 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 						allListModel.clear();
 						currentSample = currentSample +1;
 						setSampleDisplayed();
+						buttonAvg.setVisible(true);
 					}
 				}
 				//Averages the spectra displayed on the chart and writes it to the file
 				if (e.getSource() == buttonAvg){
+					buttonAvg.setVisible(false);//Turn button off
+
 					//Averaging Spectra
 					double[] avgSpectra = new double[displaySpectra.get(0).getRawASDvalues().length];//holds the averaged spectra 
 					int numFiles = displaySpectra.size();// used to divide and get the average
@@ -509,6 +519,7 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 					chart.getXYPlot().setDataset(createDataset());	
 					
 					//Write to the file
+					//Write Averaged Spectra
 					PrintWriter writer = new PrintWriter(new OutputStreamWriter(fout));
 					writer.write(allSpectraFileList.get(currentSample).getSampleID() + ",AVG,");
 					for (int k = 0; k<avgSpectra.length;k++){
@@ -520,6 +531,7 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 						}
 						writer.flush();
 					}
+					//Write Standard deviation of Spectra
 					writer.write(allSpectraFileList.get(currentSample).getSampleID() + ",STD,");
 					for (int k = 0; k<stdSpectra.length;k++){
 						if( k <stdSpectra.length -1){
@@ -533,5 +545,4 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 				}
 
 			}
-			
 }
