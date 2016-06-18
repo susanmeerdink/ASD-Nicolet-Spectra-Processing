@@ -210,7 +210,7 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 			        domain.setTickUnit(new NumberTickUnit(0.1));
 			        domain.setVerticalTickLabels(true);
 			        NumberAxis range = (NumberAxis) xyPlot.getRangeAxis(); //Get y Axis
-					range.setRange(0,1); //Set Y Axis to 0 and 1
+					range.setRange(0,1.05); //Set Y Axis to 0 and 1
 			        range.setTickUnit(new NumberTickUnit(0.05));
 
 				}
