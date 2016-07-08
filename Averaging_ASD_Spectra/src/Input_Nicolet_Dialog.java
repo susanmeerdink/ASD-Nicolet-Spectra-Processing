@@ -10,6 +10,8 @@ import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -21,9 +23,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import java.io.File;
-
-import au.com.bytecode.opencsv.CSVReader;
-
 
 public class Input_Nicolet_Dialog implements ActionListener{
 	private JFrame frame = new JFrame("Program to batch average Nicolet spectra");
@@ -206,9 +205,11 @@ public class Input_Nicolet_Dialog implements ActionListener{
 			int result = selectfile.showOpenDialog(frame); //and an integer representing the button clicked
 			if(result == JFileChooser.APPROVE_OPTION) {
 				try{	
-					CSVReader reader = new CSVReader(new FileReader(selectfile.getSelectedFile().getPath()), ','); // read in the file
+					//CSVReader reader = new CSVReader(new FileReader(selectfile.getSelectedFile().getPath()), ','); // read in the file
 					String[] record;
-					while((record = reader.readNext()) != null) {
+					//while((record = reader.readNext()) != null) {
+					for (String line : Files.readAllLines(Paths.get(selectfile.getSelectedFile().getPath()))){
+						record = line.split(","); //Split the line based on commas
 						if (record[0].isEmpty() == false){
 							String[] inputRecord = Arrays.copyOfRange(record, 1, record.length);
 							allSpectraFileList.add(new SpectraFileList(record[0],inputRecord)); //create a spectra object and add to allSpectra list
@@ -216,7 +217,7 @@ public class Input_Nicolet_Dialog implements ActionListener{
 							//System.out.println("List of Files: " + Arrays.toString(inputRecord));
 						}
 					}
-					reader.close();
+					//reader.close();
 					textBox2.setText(selectfile.getSelectedFile().getPath());
 					
 				}

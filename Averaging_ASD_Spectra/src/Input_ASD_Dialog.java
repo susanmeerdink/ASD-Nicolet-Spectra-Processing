@@ -20,7 +20,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import au.com.bytecode.opencsv.CSVReader;
 
 
 public class Input_ASD_Dialog implements ActionListener{
@@ -192,15 +191,17 @@ public class Input_ASD_Dialog implements ActionListener{
 			JFileChooser selectfile = new JFileChooser(dir); //create a file chooser window
 			int result = selectfile.showOpenDialog(frame); //and an integer representing the button clicked
 			if(result == JFileChooser.APPROVE_OPTION) {
-				try{	
-					CSVReader reader = new CSVReader(new FileReader(selectfile.getSelectedFile().getPath()), ','); // read in the file
+				try{
+					//CSVReader reader = new CSVReader(new FileReader(selectfile.getSelectedFile().getPath()), ','); // read in the file
 					String[] record;
-					while((record = reader.readNext()) != null) {
+					for (String line : Files.readAllLines(Paths.get(selectfile.getSelectedFile().getPath()))){
+					//while((record = reader.readNext()) != null) {
+						record = line.split(","); //Split the line based on commas
 						if (record[0].isEmpty() == false){
 							allSpectraFileList.add(new SpectraFileList(record[0],Integer.parseInt(record[1]), Integer.parseInt(record[2]))); //create a spectra object and add to allSpectra list
 						}
 					}
-					reader.close();
+					//reader.close();
 					textBox2.setText(selectfile.getSelectedFile().getPath());
 					
 				}
