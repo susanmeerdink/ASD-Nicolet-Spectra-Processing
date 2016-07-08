@@ -204,20 +204,15 @@ public class Input_Nicolet_Dialog implements ActionListener{
 			JFileChooser selectfile = new JFileChooser(); //create a file chooser window
 			int result = selectfile.showOpenDialog(frame); //and an integer representing the button clicked
 			if(result == JFileChooser.APPROVE_OPTION) {
-				try{	
-					//CSVReader reader = new CSVReader(new FileReader(selectfile.getSelectedFile().getPath()), ','); // read in the file
+				try{
 					String[] record;
-					//while((record = reader.readNext()) != null) {
 					for (String line : Files.readAllLines(Paths.get(selectfile.getSelectedFile().getPath()))){
 						record = line.split(","); //Split the line based on commas
 						if (record[0].isEmpty() == false){
 							String[] inputRecord = Arrays.copyOfRange(record, 1, record.length);
 							allSpectraFileList.add(new SpectraFileList(record[0],inputRecord)); //create a spectra object and add to allSpectra list
-							//System.out.println("Filename: " + record[0]);
-							//System.out.println("List of Files: " + Arrays.toString(inputRecord));
 						}
 					}
-					//reader.close();
 					textBox2.setText(selectfile.getSelectedFile().getPath());
 					
 				}
