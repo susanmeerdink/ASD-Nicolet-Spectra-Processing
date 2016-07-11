@@ -1,6 +1,3 @@
-*.csv
-*.txt
-
 #Ignoring Java environement files
 *.xml
 *.iml
