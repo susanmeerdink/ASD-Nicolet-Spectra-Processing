@@ -15,12 +15,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import java.io.File;
 
@@ -33,6 +28,8 @@ public class Input_Nicolet_Dialog implements ActionListener{
 	private JButton button3 = new JButton("Browse");
 	private JButton buttonCancel = new JButton("Cancel");
 	private JButton buttonNext = new JButton("Next");
+	String[] options = {"","Yes", "No"};
+	private JComboBox buttonYesNo = new JComboBox(options);
 	
 	private JTextField textBox1 = new JTextField();
 	private JTextField textBox2 = new JTextField();
@@ -47,22 +44,26 @@ public class Input_Nicolet_Dialog implements ActionListener{
 		pane.setLayout(new GridBagLayout()); //Use GridBagLayout for GUI set up
 		GridBagConstraints c = new GridBagConstraints();
 		
-		Font font = new Font("Helvetica", Font.BOLD,14);
-		
 		//JLabel text1 = new JLabel("This program batch performs averaging of ASD spectra.");
 		JLabel textStep1 = new JLabel("Step 1: Designate directory that contains Nicolet spectra");
-		JLabel textStep1a = new JLabel("Files within directory should be .TAB or .txt files with 2 columns of data. These files have had JPL corrections completed.");
-		JLabel textStep2 = new JLabel("Step 2: Upload Spectra File List");
-		JLabel text2a = new JLabel("This file must be a .csv file with the first column containing the Sample ID, all other columns containing the file names associated");
-		JLabel text2b = new JLabel("with that spectra. For example: VH001, 2013_04_02_001a, 2013_04_02_001b.");
-		JLabel textStep3 = new JLabel("Step 3: Set Output File");
+		JLabel textStep1a = new JLabel("Files within directory should be .TAB, .txt, or .csv files with 2 columns of data. ");
+		JLabel textStep2 = new JLabel("Step 2: Has the JPL Nicolet Correction been applied?");
+		JLabel text2a = new JLabel("Corrections are made for imperfections of the sphere, the incoming & exiting ports, and imperfections in the gold coating.");
+		JLabel text2b = new JLabel("Reference: Generalized Integrating-Sphere Theory, David G. Goebel, Applied Optics, v. 6, no. 1, Jan. 1967, pp. 125-128.");
+		JLabel textStep3 = new JLabel("Step 3: Upload Spectra File List");
+		JLabel text3a = new JLabel("This file must be a .csv file with the first column containing the Sample ID, all other columns containing the file names associated");
+		JLabel text3b = new JLabel("with that spectra. For example: VH001, 2013_04_02_001a, 2013_04_02_001b.");
+		JLabel textStep4 = new JLabel("Step 4: Set Output File");
 		JLabel textSF1 = new JLabel("Selected File");
 		JLabel textSF2 = new JLabel("Selected File");
 		JLabel textCF = new JLabel("Create File");
-		
+
+		//Change Header Fonts
+		Font font = new Font("Helvetica", Font.BOLD,14);
 		textStep1.setFont(font);
 		textStep2.setFont(font);
 		textStep3.setFont(font);
+		textStep4.setFont(font);
 		
 		textBox1.setPreferredSize(new Dimension(800, 25));
 		textBox2.setPreferredSize(new Dimension(800, 25));
@@ -72,6 +73,7 @@ public class Input_Nicolet_Dialog implements ActionListener{
 		button3.addActionListener(this); 
 		buttonCancel.addActionListener(this); 
 		buttonNext.addActionListener(this);
+		buttonYesNo.addActionListener(this);
 		
 		c.anchor = GridBagConstraints.CENTER;
         c.insets = new Insets(10,5,5,5);  //top padding
@@ -92,52 +94,72 @@ public class Input_Nicolet_Dialog implements ActionListener{
     	pane.add(textBox1,c); //Add TextBox
     	c.gridx = 2;
     	c.gridy = 2;
-    	pane.add(button1,c); 
-    	
-        c.insets = new Insets(10,5,5,5);  //top padding
-    	c.gridx = 0;
-    	c.gridy = 3;
-    	c.gridwidth = 3;
-    	pane.add(textStep2,c); //Add Label
-    	c.insets = new Insets(5,5,5,5);  //padding
-    	c.gridx = 0;
-    	c.gridy = 4;
-    	pane.add(text2a,c); //Add Label 
-    	c.gridx = 0;
-    	c.gridy = 5;
-    	pane.add(text2b,c); //Add Label 
-    	c.gridx = 0;
-    	c.gridy = 6;
-    	c.gridwidth = 1;
-    	pane.add(textSF2,c); //Add Label 
-    	c.gridx = 1;
-    	c.gridy = 6;
-    	pane.add(textBox2,c);
-    	c.gridx = 2;
-    	c.gridy = 6;
-    	pane.add(button2,c);
+    	pane.add(button1,c);
+
+		c.insets = new Insets(10,5,5,5);  //top padding
+		c.gridx = 0;
+		c.gridy = 3;
+		c.gridwidth = 3;
+		pane.add(textStep2,c); //Add Label
+		c.insets = new Insets(5,5,5,5);  //padding
+		c.gridx = 0;
+		c.gridy = 4;
+		pane.add(text2a,c); //Add Label
+		c.gridx = 0;
+		c.gridy = 5;
+		pane.add(text2b,c); //Add Label
+		c.gridx = 0;
+		c.gridy = 6;
+		c.gridwidth = 1;
+		pane.add(textSF2,c); //Add Label
+		c.gridx = 1;
+		c.gridy = 6;
+		pane.add(buttonYesNo,c);
     	
         c.insets = new Insets(10,5,5,5);  //top padding
     	c.gridx = 0;
     	c.gridy = 7;
     	c.gridwidth = 3;
-    	pane.add(textStep3,c); //Add Label 
+    	pane.add(textStep3,c); //Add Label
+    	c.insets = new Insets(5,5,5,5);  //padding
     	c.gridx = 0;
     	c.gridy = 8;
+    	pane.add(text3a,c); //Add Label
+    	c.gridx = 0;
+    	c.gridy = 9;
+    	pane.add(text3b,c); //Add Label
+    	c.gridx = 0;
+    	c.gridy = 10;
+    	c.gridwidth = 1;
+    	pane.add(textSF2,c); //Add Label 
+    	c.gridx = 1;
+    	c.gridy = 10;
+    	pane.add(textBox2,c);
+    	c.gridx = 2;
+    	c.gridy = 10;
+    	pane.add(button2,c);
+    	
+        c.insets = new Insets(10,5,5,5);  //top padding
+    	c.gridx = 0;
+    	c.gridy = 11;
+    	c.gridwidth = 3;
+    	pane.add(textStep4,c); //Add Label
+    	c.gridx = 0;
+    	c.gridy = 12;
     	c.gridwidth=1;
     	pane.add(textCF,c); //Add Label for Displayed Samples
     	c.gridx = 1;
-    	c.gridy = 8;
+    	c.gridy = 12;
     	pane.add(textBox3,c);
     	c.gridx = 2;
-    	c.gridy = 8;
+    	c.gridy = 12;
     	pane.add(button3,c);
-    	
+
     	c.gridx = 0;
-    	c.gridy = 9;
+    	c.gridy = 13;
     	pane.add(buttonCancel,c);
     	c.gridx = 2;
-    	c.gridy = 9;
+    	c.gridy = 13;
     	pane.add(buttonNext,c);
 		
 		frame.pack();
@@ -158,42 +180,39 @@ public class Input_Nicolet_Dialog implements ActionListener{
 				
 				for (File file : listOfFiles) {
 				    if (file.isFile()) {
-				    	//if (file.getName().contains(".csv") ^ file.getName().contains(".CSV")){
-				    		//System.out.println("File contains .csv in name");
-							try {
-								FileReader fileIN = new FileReader(file.getPath()); // read in the file
-								BufferedReader reader = new BufferedReader(fileIN);
-								double[] tempArray = new double[1869];
-								int i = 0;
-								String tempRecord = null;
-								while((tempRecord = reader.readLine()) != null) {
-									if(tempRecord.isEmpty()){
-										break;
-									}
-									else{
-										String[] record = tempRecord.split("\\s+");//first index is blank, second is wavelength, third is reflectance
-										//System.out.println(i + " : " + Arrays.toString(record));
-										double temp = Double.parseDouble((record[2]));
-										tempArray[i] = temp;
-										//System.out.println(i + " : " + tempArray[i]);
-										i = i +1;
-									}
-								}	
-								//Reverse order the array b/c the file goes from long to short wavelengths
-								double[] tempRev = new double[1869];
-								for(int j = 0; j < tempArray.length;j++){
-									System.out.println(j + " , " + (tempArray.length-j -1));
-									tempRev[j] = tempArray[tempArray.length-j -1];
-									System.out.println(j + " : " + tempRev[j] + " , " + tempArray[tempArray.length-j -1]);
+						try {
+							FileReader fileIN = new FileReader(file.getPath()); // read in the file
+							BufferedReader reader = new BufferedReader(fileIN);
+							double[] tempArray = new double[1869];
+							int i = 0;
+							String tempRecord = null;
+							while((tempRecord = reader.readLine()) != null) {
+								if(tempRecord.isEmpty()){
+									break;
 								}
-								allSpectra.add(new Spectra(file.getName().split("\\.")[0],tempRev)); //create a spectra object and add to allSpectra list
-								reader.close();
-							} 
-							catch (NumberFormatException | IOException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
+								else{
+									String[] record = tempRecord.split("\\s+");//first index is blank, second is wavelength, third is reflectance
+									//System.out.println(i + " : " + Arrays.toString(record));
+									double temp = Double.parseDouble((record[2]));
+									tempArray[i] = temp;
+									//System.out.println(i + " : " + tempArray[i]);
+									i = i +1;
+								}
 							}
-				    	//}
+							//Reverse order the array b/c the file goes from long to short wavelengths
+							double[] tempRev = new double[1869];
+							for(int j = 0; j < tempArray.length;j++){
+								System.out.println(j + " , " + (tempArray.length-j -1));
+								tempRev[j] = tempArray[tempArray.length-j -1];
+								System.out.println(j + " : " + tempRev[j] + " , " + tempArray[tempArray.length-j -1]);
+							}
+							allSpectra.add(new Spectra(file.getName().split("\\.")[0],tempRev)); //create a spectra object and add to allSpectra list
+							reader.close();
+						}
+						catch (NumberFormatException | IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 				    }
 				}
 			}
@@ -252,20 +271,30 @@ public class Input_Nicolet_Dialog implements ActionListener{
 		
 		//Button that moves onto Visualizing/Averaging GUI
 		if(e.getSource() == buttonNext){
-			if(allSpectra.isEmpty() || allSpectraFileList.isEmpty() || fout == null){
-				JOptionPane.showMessageDialog(frame,"Please fill in all 3 inputs.", "Input error",JOptionPane.ERROR_MESSAGE);
+			// Button that sets correction status of spectra
+			String status = (String)buttonYesNo.getSelectedItem();
+			if(allSpectra.isEmpty() || allSpectraFileList.isEmpty() || fout == null || status.equals("")){
+				JOptionPane.showMessageDialog(frame,"Please fill in all 4 inputs.", "Input error",JOptionPane.ERROR_MESSAGE);
 			}
 			else{
 				try {
-					GUI_Avg_Spectra gui = new GUI_Avg_Spectra(2);
-					gui.setVar(allSpectra,allSpectraFileList,fout);
+					if(status.equals("Yes")){
+						for(int i = 0; i<allSpectra.size();i++){
+							allSpectra.get(i).correction();
+						}
+						GUI_Avg_Spectra gui = new GUI_Avg_Spectra(2);
+						gui.setVar(allSpectra,allSpectraFileList,fout);
+					}
+					if(status.equals("No")){
+						GUI_Avg_Spectra gui = new GUI_Avg_Spectra(2);
+						gui.setVar(allSpectra,allSpectraFileList,fout);
+					}
 					
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				frame.setVisible(false);
-				
 			}
 		}
 	}
