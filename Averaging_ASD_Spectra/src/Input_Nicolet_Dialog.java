@@ -38,6 +38,8 @@ public class Input_Nicolet_Dialog implements ActionListener{
 	private ArrayList<Spectra> allSpectra = new ArrayList<Spectra>();
 	private ArrayList<SpectraFileList> allSpectraFileList = new ArrayList<SpectraFileList>();
 	private FileOutputStream fout;
+
+	private String dir = System.getProperty("user.dir"); //Get current working directory
 	
 	public Input_Nicolet_Dialog(){
 		
@@ -170,7 +172,7 @@ public class Input_Nicolet_Dialog implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// Button that reads files in from a directory
 		if(e.getSource() == button1){
-			JFileChooser selectfile = new JFileChooser(); //create a file chooser window
+			JFileChooser selectfile = new JFileChooser(dir); //create a file chooser window
 			selectfile.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			int result = selectfile.showOpenDialog(frame); //and an integer representing the button clicked
 			if(result == JFileChooser.APPROVE_OPTION) {
@@ -220,7 +222,7 @@ public class Input_Nicolet_Dialog implements ActionListener{
 		
 		//Button that reads in spectra file list
 		if(e.getSource() == button2){
-			JFileChooser selectfile = new JFileChooser(); //create a file chooser window
+			JFileChooser selectfile = new JFileChooser(dir); //create a file chooser window
 			int result = selectfile.showOpenDialog(frame); //and an integer representing the button clicked
 			if(result == JFileChooser.APPROVE_OPTION) {
 				try{
@@ -244,7 +246,7 @@ public class Input_Nicolet_Dialog implements ActionListener{
 		
 		//Button that creates output file
 		if(e.getSource() == button3){
-			JFileChooser selectfile = new JFileChooser(); //create a file chooser window
+			JFileChooser selectfile = new JFileChooser(dir); //create a file chooser window
 			int result = selectfile.showSaveDialog(frame); //and an integer representing the button clicked
 			if(result == JFileChooser.APPROVE_OPTION) {
 				try{
