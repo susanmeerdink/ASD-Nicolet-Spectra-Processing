@@ -13,11 +13,11 @@ public class Spectra {
 		sampleID = inputID;
 	}
 
-	public double[] getRawASDvalues() {
+	public double[] getRawvalues() {
 		return rawValues;
 	}
 
-	private void setRawASDvalues(double[] rawValues) {
+	private void setRawvalues(double[] rawValues) {
 		this.rawValues = rawValues;
 	}
 
@@ -36,7 +36,7 @@ public class Spectra {
 			double temp = this.rawValues[i] * this.corrValues[i];
 			tempSpectrum[i] = temp;
 		}
-		setRawASDvalues(tempSpectrum);
+		setRawvalues(tempSpectrum);
 	}
 	
 }

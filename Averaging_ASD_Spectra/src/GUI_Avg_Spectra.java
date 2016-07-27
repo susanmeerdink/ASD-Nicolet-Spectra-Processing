@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -58,6 +59,7 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 			private JFreeChart chart;
 			private ChartPanel chartPanel ;
 			private LegendTitle legend;
+			private NumberAxis range;
 			final static boolean shouldFill = true;
 			private String chartTitle = "Visualize Spectra";
 			private int chartType = 0; // 1 = ASD/VSWIR 2 = Nicolet/TIR
@@ -171,7 +173,6 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 				
 				c.gridx = 1;
 				c.gridy = 3;
-				//c.gridwidth = 2;
 				c.anchor = GridBagConstraints.CENTER;
 				pane.add(buttonAvg,c);// Add Button that averages the spectra displayed
 				
@@ -198,35 +199,34 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 				XYPlot xyPlot = (XYPlot) chart.getPlot();
 				
 				//Legend
-				//LegendTitle legend = chart.getLegend(); //Grab legend so can customize
 				legend = chart.getLegend(); //Grab legend so can customize
 				legend.setPosition(RectangleEdge.RIGHT); //Move legend to the right
 				
 				//Axis Properties
 				NumberAxis domain = (NumberAxis) xyPlot.getDomainAxis(); //Get X axis
-				
+				range = (NumberAxis) xyPlot.getRangeAxis(); //Get y Axis
+
+
 				if(chartType == 1){ //ASD/VSWIR spectra
 					domain.setRange(0.35, 2.5);
 			        domain.setTickUnit(new NumberTickUnit(0.1));
 			        domain.setVerticalTickLabels(true);
-			        NumberAxis range = (NumberAxis) xyPlot.getRangeAxis(); //Get y Axis
-					range.setRange(0,1.05); //Set Y Axis to 0 and 1
-			        range.setTickUnit(new NumberTickUnit(0.05));
+					range.setRange(0,1.05); //Set Y Axis
+			        //range.setTickUnit(new NumberTickUnit(0.05));
 
 				}
 				else if (chartType == 2){ //Nicolet/TIR Spectra
 					domain.setRange(2.5, 15.5);
 			        domain.setTickUnit(new NumberTickUnit(0.5));
 			        domain.setVerticalTickLabels(true);
-			        NumberAxis range = (NumberAxis) xyPlot.getRangeAxis();
-			        range.setTickUnit(new NumberTickUnit(0.02));
+					range.setRange(0,1.05); //Set Y Axis
+			        //range.setTickUnit(new NumberTickUnit(0.02));
 				}
 				else{ //default
 					domain.setRange(0.35, 15);
 			        domain.setTickUnit(new NumberTickUnit(1));
 			        domain.setVerticalTickLabels(true);
-			        NumberAxis range = (NumberAxis) xyPlot.getRangeAxis();
-			        range.setTickUnit(new NumberTickUnit(0.1));
+			        //range.setTickUnit(new NumberTickUnit(0.1));
 				}
 
 		                
@@ -244,7 +244,7 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 			private XYDataset createDataset() {
 				data.removeAllSeries(); //Remove all the was there 
 				ArrayList<XYSeries> xyData = new ArrayList<XYSeries>(); //Create object that you can add 'Series' too
-				
+				double maxValue = 0; //Used for setting Y axis range
 				//Cycle through the displayed Spectra list and add the data to the graph
 				if(displaySpectra.size()>0){
 					for (int i = 0;i<displaySpectra.size();i++){
@@ -252,17 +252,27 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 						//Code for adding ASD Spectra
 						if (chartType == 1){
 							for (int j =0;j<wavelengthsASD.length;j++){
-								xyData.get(i).add(new XYDataItem((double) wavelengthsASD[j],(double)(displaySpectra.get(i).getRawASDvalues()[j])));
+								xyData.get(i).add(new XYDataItem((double) wavelengthsASD[j],(double)(displaySpectra.get(i).getRawvalues()[j])));
+								if(displaySpectra.get(i).getRawvalues()[j] > maxValue && j < 900){
+									maxValue = displaySpectra.get(i).getRawvalues()[j];
+								}
 							}
 						}
 						//Code for adding Nicolet Spectra
 						else{
 							for (int j =0;j<wavelengthsNicolet.length;j++){
-								xyData.get(i).add(new XYDataItem((double) wavelengthsNicolet[j],(double)(displaySpectra.get(i).getRawASDvalues()[j])));
+								xyData.get(i).add(new XYDataItem((double) wavelengthsNicolet[j],(double)(displaySpectra.get(i).getRawvalues()[j])));
+								if(displaySpectra.get(i).getRawvalues()[j] > maxValue && j < 900){
+									maxValue = displaySpectra.get(i).getRawvalues()[j];
+								}
 							}
 						}
+
 						data.addSeries(xyData.get(i));
 					}
+					//Setting YAxis range
+					maxValue = maxValue + (maxValue*0.3);
+					range.setRange(0, maxValue);
 				}
 				return data;
 			}
@@ -277,10 +287,7 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 					//System.out.println("Length of file list:" + allSpectraFileList.get(currentSample).getListFiles().length);
 					for (int j = 0;j<allSpectraFileList.get(currentSample).getListFiles().length;j++){
 						for(int k = 0; k < allSpectra.size(); k++){
-							//System.out.println("Current Sample ID" + allSpectraFileList.get(currentSample).getListFiles()[j]);
-							//System.out.println("Checking Sample Name for Match: " + allSpectra.get(k).getSampleID());
 							if(allSpectraFileList.get(currentSample).getListFiles()[j].equals(allSpectra.get(k).getSampleID())){
-								//System.out.println("A MATCH: " + allSpectra.get(k).getSampleID());
 								dispListModel.addElement(allSpectra.get(k).getSampleID());
 								displaySpectra.add(allSpectra.get(k));
 							}
@@ -484,12 +491,12 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 					buttonAvg.setVisible(false);//Turn button off
 
 					//Averaging Spectra
-					double[] avgSpectra = new double[displaySpectra.get(0).getRawASDvalues().length];//holds the averaged spectra 
+					double[] avgSpectra = new double[displaySpectra.get(0).getRawvalues().length];//holds the averaged spectra
 					int numFiles = displaySpectra.size();// used to divide and get the average
 					double sum = 0;//used to sum of the values			
-					for (int j = 0; j < displaySpectra.get(0).getRawASDvalues().length;j++){ //loop through columns
+					for (int j = 0; j < displaySpectra.get(0).getRawvalues().length;j++){ //loop through columns
 						for(int i = 0; i < displaySpectra.size(); i ++){ //loop through files
-							sum = sum + displaySpectra.get(i).getRawASDvalues()[j]; //get the total sum
+							sum = sum + displaySpectra.get(i).getRawvalues()[j]; //get the total sum
 						}
 						avgSpectra[j] = sum/numFiles; //get the average
 						sum = 0; //reset sum for next column
@@ -497,12 +504,12 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 					avgAllSpectra.add(new Spectra(allSpectraFileList.get(currentSample).getSampleID(),avgSpectra));
 
 					//Standard Deviation of Spectra
-					double[] stdSpectra = new double[displaySpectra.get(0).getRawASDvalues().length];//holds the standard deviation of spectra
+					double[] stdSpectra = new double[displaySpectra.get(0).getRawvalues().length];//holds the standard deviation of spectra
 					double dev = 0;
 					double devSum = 0;
-					for (int j = 0; j < displaySpectra.get(0).getRawASDvalues().length;j++){ //loop through columns
+					for (int j = 0; j < displaySpectra.get(0).getRawvalues().length;j++){ //loop through columns
 						for(int i = 0; i < displaySpectra.size(); i ++){ //loop through files
-							dev = Math.pow(displaySpectra.get(i).getRawASDvalues()[j] - avgSpectra[j],2); //deviations of each data point from the mean
+							dev = Math.pow(displaySpectra.get(i).getRawvalues()[j] - avgSpectra[j],2); //deviations of each data point from the mean
 							devSum = devSum + dev;
 						}
 						stdSpectra[j] = sqrt(devSum/numFiles);
