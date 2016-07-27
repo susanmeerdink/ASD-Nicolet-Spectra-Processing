@@ -48,7 +48,7 @@ public class Input_Nicolet_Dialog implements ActionListener{
 		
 		//JLabel text1 = new JLabel("This program batch performs averaging of ASD spectra.");
 		JLabel textStep1 = new JLabel("Step 1: Designate directory that contains Nicolet spectra");
-		JLabel textStep1a = new JLabel("Files within directory should be .TAB, .txt, or .csv files with 2 columns of data. ");
+		JLabel textStep1a = new JLabel("Files within directory should be .TAB or .csv files with 2 columns of data. ");
 		JLabel textStep2 = new JLabel("Step 2: Has the JPL Nicolet Correction been applied?");
 		JLabel text2a = new JLabel("Corrections are made for imperfections of the sphere, the incoming & exiting ports, and imperfections in the gold coating.");
 		JLabel text2b = new JLabel("Reference: Generalized Integrating-Sphere Theory, David G. Goebel, Applied Optics, v. 6, no. 1, Jan. 1967, pp. 125-128.");
@@ -184,8 +184,10 @@ public class Input_Nicolet_Dialog implements ActionListener{
 				    if (file.isFile()) {
 						try {
 							FileReader fileIN = new FileReader(file.getPath()); // read in the file
+							System.out.println(file.getName().split("\\.")[0]);
 							BufferedReader reader = new BufferedReader(fileIN);
-							double[] tempArray = new double[1869];
+							//double[] tempArray = new double[1869];
+							double[] tempArray = new double[1738];
 							int i = 0;
 							String tempRecord = null;
 							while((tempRecord = reader.readLine()) != null) {
@@ -193,20 +195,31 @@ public class Input_Nicolet_Dialog implements ActionListener{
 									break;
 								}
 								else{
-									String[] record = tempRecord.split("\\s+");//first index is blank, second is wavelength, third is reflectance
-									//System.out.println(i + " : " + Arrays.toString(record));
-									double temp = Double.parseDouble((record[2]));
-									tempArray[i] = temp;
-									//System.out.println(i + " : " + tempArray[i]);
-									i = i +1;
+									//For TAB files, first index is blank, second is wavelength, third is reflectance
+									//For CSV files, first index is wavelength, second is reflectance
+									if(file.getPath().contains(".tab")){
+										//String[] record = tempRecord.split("\\s+");
+										//System.out.println(i + " " + (record[2]));
+										if( i > 129 && i < 1868){
+											String[] record = tempRecord.split("\\s+");
+											double temp = Double.parseDouble((record[2]));
+											tempArray[i-130] = temp;
+										}
+										i = i +1;
+									} else { //If it is a .csv file
+										String[] record = tempRecord.split(",");
+										double temp = Double.parseDouble((record[1]));
+										tempArray[i] = temp;
+										i = i + 1;
+									}
 								}
 							}
 							//Reverse order the array b/c the file goes from long to short wavelengths
-							double[] tempRev = new double[1869];
+							double[] tempRev = new double[1738];
 							for(int j = 0; j < tempArray.length;j++){
-								System.out.println(j + " , " + (tempArray.length-j -1));
+								//System.out.println(j + " , " + (tempArray.length-j -1));
 								tempRev[j] = tempArray[tempArray.length-j -1];
-								System.out.println(j + " : " + tempRev[j] + " , " + tempArray[tempArray.length-j -1]);
+								//System.out.println(j + " : " + tempRev[j] + " , " + tempArray[tempArray.length-j -1]);
 							}
 							allSpectra.add(new Spectra(file.getName().split("\\.")[0],tempRev)); //create a spectra object and add to allSpectra list
 							reader.close();
