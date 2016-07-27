@@ -2,6 +2,7 @@
 *.xml
 *.iml
 *.class
+*.asd
 
 # Windows image file caches
 Thumbs.db

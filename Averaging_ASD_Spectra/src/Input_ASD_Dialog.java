@@ -239,20 +239,16 @@ public class Input_ASD_Dialog implements ActionListener{
 			if(allSpectra.isEmpty() || allSpectraFileList.isEmpty() || fout == null){
 				JOptionPane.showMessageDialog(frame,"Please fill in all 3 inputs.", "Input error",JOptionPane.ERROR_MESSAGE);
 			}
-			else{
+			else {
 				try {
 					GUI_Avg_Spectra gui = new GUI_Avg_Spectra(1);
-					gui.setVar(allSpectra,allSpectraFileList,fout);
+					gui.setVar(allSpectra, allSpectraFileList, fout);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}			
+				}
 				frame.setVisible(false);
 			}
-
-			
-
 		}
 	}
-
 }
