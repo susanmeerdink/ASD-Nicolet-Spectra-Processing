@@ -177,6 +177,7 @@ public class Input_Nicolet_Dialog implements ActionListener{
 			int result = selectfile.showOpenDialog(frame); //and an integer representing the button clicked
 			if(result == JFileChooser.APPROVE_OPTION) {
 				File folder = new File(selectfile.getSelectedFile().getPath());
+				dir = selectfile.getSelectedFile().getParent(); //Updates new directory
 				File[] listOfFiles = folder.listFiles();
 				textBox1.setText(selectfile.getSelectedFile().getPath());
 				
@@ -184,9 +185,7 @@ public class Input_Nicolet_Dialog implements ActionListener{
 				    if (file.isFile()) {
 						try {
 							FileReader fileIN = new FileReader(file.getPath()); // read in the file
-							System.out.println(file.getName().split("\\.")[0]);
 							BufferedReader reader = new BufferedReader(fileIN);
-							//double[] tempArray = new double[1869];
 							double[] tempArray = new double[1738];
 							int i = 0;
 							String tempRecord = null;
@@ -198,8 +197,6 @@ public class Input_Nicolet_Dialog implements ActionListener{
 									//For TAB files, first index is blank, second is wavelength, third is reflectance
 									//For CSV files, first index is wavelength, second is reflectance
 									if(file.getPath().contains(".tab")){
-										//String[] record = tempRecord.split("\\s+");
-										//System.out.println(i + " " + (record[2]));
 										if( i > 129 && i < 1868){
 											String[] record = tempRecord.split("\\s+");
 											double temp = Double.parseDouble((record[2]));
@@ -217,9 +214,7 @@ public class Input_Nicolet_Dialog implements ActionListener{
 							//Reverse order the array b/c the file goes from long to short wavelengths
 							double[] tempRev = new double[1738];
 							for(int j = 0; j < tempArray.length;j++){
-								//System.out.println(j + " , " + (tempArray.length-j -1));
 								tempRev[j] = tempArray[tempArray.length-j -1];
-								//System.out.println(j + " : " + tempRev[j] + " , " + tempArray[tempArray.length-j -1]);
 							}
 							allSpectra.add(new Spectra(file.getName().split("\\.")[0],tempRev)); //create a spectra object and add to allSpectra list
 							reader.close();
