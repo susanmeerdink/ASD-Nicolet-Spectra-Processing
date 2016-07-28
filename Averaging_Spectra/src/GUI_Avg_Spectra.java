@@ -481,6 +481,7 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 						finalDisplay();
 						buttonNext.setVisible(false);
 						buttonAvg.setVisible(false);
+						buttonBack.setVisible(false);
 						buttonCancel.setText("Done");
 					}
 					else{ //if there are more samples continue here...
@@ -543,13 +544,11 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 							String currName = allSpectraFileList.get(currentSample).getSampleID(); //the sample id that is being added
 							String testName = avgAllSpectra.get(i).getSampleID();
 							if(currName.equals(testName) == true ){ //If a match is found, replace that value
-								System.out.println("Replaced");
 								avgAllSpectra.set(i, new Spectra(allSpectraFileList.get(currentSample).getSampleID(),avgSpectra));
 								stdAllSpectra.set(i, new Spectra(allSpectraFileList.get(currentSample).getSampleID(),stdSpectra));
 								break;
 							} else{
 								if(i == avgAllSpectra.size()-1){ //If no matches have been found, add to the end
-									System.out.println("Added");
 									avgAllSpectra.add(new Spectra(allSpectraFileList.get(currentSample).getSampleID(),avgSpectra));
 									stdAllSpectra.add(new Spectra(allSpectraFileList.get(currentSample).getSampleID(),stdSpectra));
 									break;
