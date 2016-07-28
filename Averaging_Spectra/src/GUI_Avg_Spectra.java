@@ -69,7 +69,7 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 			private JMenuBar menubar = new JMenuBar(); // Our menu bar
 			
 			//Member variables for GUI
-			private JFrame frame = new JFrame("Visualizing ASD Spectra");
+			private JFrame frame = new JFrame("Visualizing Spectra");
 			private Container pane = frame.getContentPane();
 
 			//Member Variables for JLists
