@@ -50,7 +50,7 @@ public class Input_Nicolet_Dialog implements ActionListener{
 		JLabel textStep1 = new JLabel("Step 1: Designate directory that contains Nicolet spectra");
 		JLabel textStep1a = new JLabel("Files within directory should be .TAB or .csv files with 2 columns of data. ");
 		JLabel textStep2 = new JLabel("Step 2: Has the JPL Nicolet Correction been applied?");
-		JLabel text2a = new JLabel("Corrections are made for imperfections of the sphere, the incoming & exiting ports, and imperfections in the gold coating.");
+		JLabel text2a = new JLabel("Corrections are made for imperfections of the sphere, the incoming & exiting ports, and imperfections in the gold coating. 'No' will automatically apply correction.");
 		JLabel text2b = new JLabel("Reference: Generalized Integrating-Sphere Theory, David G. Goebel, Applied Optics, v. 6, no. 1, Jan. 1967, pp. 125-128.");
 		JLabel textStep3 = new JLabel("Step 3: Upload Spectra File List");
 		JLabel text3a = new JLabel("This file must be a .csv file with the first column containing the Sample ID, all other columns containing the file names associated");
