@@ -9,8 +9,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -112,6 +112,7 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 				buttonCancel.addActionListener(this); 
 				buttonNext.addActionListener(this);
 				buttonAvg.addActionListener(this);
+				buttonBack.addActionListener(this);
 				
 				//Create Chart Items
 		        chart = createChart();
@@ -189,7 +190,6 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 				
 				frame.pack();
 				frame.setVisible(true);
-				
 		    }
 
 			//Method that creates the chart 
@@ -491,6 +491,19 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 						buttonAvg.setVisible(true);
 					}
 				}
+
+				//Moves onto the previous sample in the file list
+				if (e.getSource() == buttonBack){
+					//do not run if this is the first sample
+					if(currentSample != 0){
+						dispListModel.clear();
+						allListModel.clear();
+						currentSample = currentSample - 1;
+						setSampleDisplayed();
+						buttonAvg.setVisible(true);
+					}
+				}
+
 				//Averages the spectra displayed on the chart and writes it to the file
 				if (e.getSource() == buttonAvg){
 					buttonAvg.setVisible(false);//Turn button off
@@ -506,7 +519,7 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 						avgSpectra[j] = sum/numFiles; //get the average
 						sum = 0; //reset sum for next column
 					}
-					avgAllSpectra.add(new Spectra(allSpectraFileList.get(currentSample).getSampleID(),avgSpectra));
+
 
 					//Standard Deviation of Spectra
 					double[] stdSpectra = new double[displaySpectra.get(0).getRawvalues().length];//holds the standard deviation of spectra
@@ -520,7 +533,33 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 						stdSpectra[j] = sqrt(devSum/numFiles);
 						devSum = 0; //reset sum for next column
 					}
-					stdAllSpectra.add(new Spectra(allSpectraFileList.get(currentSample).getSampleID(),stdSpectra));
+
+					//Adding to Avg and Std List
+					if(avgAllSpectra.size() == 0){ //If the array is empty add the first item
+						avgAllSpectra.add(new Spectra(allSpectraFileList.get(currentSample).getSampleID(),avgSpectra));
+						stdAllSpectra.add(new Spectra(allSpectraFileList.get(currentSample).getSampleID(),stdSpectra));
+					}else{ //for all other samples
+						for(int i = 0; i < avgAllSpectra.size();i++){ //Loop through the averaged samples
+							String currName = allSpectraFileList.get(currentSample).getSampleID(); //the sample id that is being added
+							String testName = avgAllSpectra.get(i).getSampleID();
+							if(currName.equals(testName) == true ){ //If a match is found, replace that value
+								System.out.println("Replaced");
+								avgAllSpectra.set(i, new Spectra(allSpectraFileList.get(currentSample).getSampleID(),avgSpectra));
+								stdAllSpectra.set(i, new Spectra(allSpectraFileList.get(currentSample).getSampleID(),stdSpectra));
+								break;
+							} else{
+								if(i == avgAllSpectra.size()-1){ //If no matches have been found, add to the end
+									System.out.println("Added");
+									avgAllSpectra.add(new Spectra(allSpectraFileList.get(currentSample).getSampleID(),avgSpectra));
+									stdAllSpectra.add(new Spectra(allSpectraFileList.get(currentSample).getSampleID(),stdSpectra));
+									break;
+								} else{
+									continue;
+								}
+							}
+						}
+					}
+
 
 					//Update Chart
 					displaySpectra.removeAll(displaySpectra);
