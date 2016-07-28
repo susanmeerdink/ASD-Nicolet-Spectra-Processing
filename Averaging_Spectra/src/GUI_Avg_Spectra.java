@@ -85,6 +85,7 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 			private JButton buttonRight = new JButton(">>");
 			private JButton buttonCancel = new JButton("Cancel");
 			private JButton buttonNext = new JButton("Next");
+			private JButton buttonBack = new JButton("Back");
 			private JButton buttonAvg = new JButton("Average the Displayed Files");
 			
 				
@@ -165,10 +166,15 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 				c.gridy = 1;
 				c.anchor = GridBagConstraints.CENTER;
 				pane.add(buttonRight,c);// Add Button that moves things from displayed to Not displayed
-					
+
 				c.gridx = 0;
 				c.gridy = 3;
 				c.anchor = GridBagConstraints.WEST;
+				pane.add(buttonBack,c);// Add Button that goes back a sample
+
+				c.gridx = 0;
+				c.gridy = 3;
+				c.anchor = GridBagConstraints.CENTER;
 				pane.add(buttonCancel,c);// Add Button that closes program
 				
 				c.gridx = 1;
@@ -267,7 +273,6 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 								}
 							}
 						}
-
 						data.addSeries(xyData.get(i));
 					}
 					//Setting YAxis range

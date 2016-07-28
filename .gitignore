@@ -3,6 +3,7 @@
 *.iml
 *.class
 *.asd
+*.csv
 
 # Windows image file caches
 Thumbs.db
