@@ -196,14 +196,15 @@ public class Input_Nicolet_Dialog implements ActionListener{
 								else{
 									//For TAB files, first index is blank, second is wavelength, third is reflectance
 									//For CSV files, first index is wavelength, second is reflectance
-									if(file.getPath().contains(".tab")){
+									if(file.getPath().contains(".tab") || file.getPath().contains(".TAB")){
 										if( i > 129 && i < 1868){
 											String[] record = tempRecord.split("\\s+");
 											double temp = Double.parseDouble((record[2]));
 											tempArray[i-130] = temp;
 										}
 										i = i +1;
-									} else { //If it is a .csv file
+									}
+									if(file.getPath().contains(".csv") || file.getPath().contains(".CSV")){ //If it is a .csv file
 										String[] record = tempRecord.split(",");
 										double temp = Double.parseDouble((record[1]));
 										tempArray[i] = temp;
