@@ -560,7 +560,6 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 						}
 					}
 
-
 					//Update Chart
 					displaySpectra.removeAll(displaySpectra);
 					Spectra avgSpectraDisp = new Spectra(allSpectraFileList.get(currentSample).getSampleID(),avgSpectra);

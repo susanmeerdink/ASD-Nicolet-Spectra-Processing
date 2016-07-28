@@ -258,7 +258,7 @@ public class Input_Nicolet_Dialog implements ActionListener{
 			int result = selectfile.showSaveDialog(frame); //and an integer representing the button clicked
 			if(result == JFileChooser.APPROVE_OPTION) {
 				try{
-					if (selectfile.getSelectedFile().getName().contains(".CSV")){
+					if (selectfile.getSelectedFile().getPath().contains(".csv")){ //If the file name already has .csv don't add it
 						fout = new FileOutputStream(selectfile.getSelectedFile());
 						textBox3.setText(selectfile.getSelectedFile().getPath());
 					}
