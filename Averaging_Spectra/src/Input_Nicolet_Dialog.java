@@ -189,6 +189,7 @@ public class Input_Nicolet_Dialog implements ActionListener{
 							double[] tempArray = new double[1738];
 							int i = 0;
 							String tempRecord = null;
+							int flag = 0; //0 for begining, 1 for csv with all wavelengths, 2 for csv with subset wavelengths
 							while((tempRecord = reader.readLine()) != null) {
 								if(tempRecord.isEmpty()){
 									break;
@@ -207,7 +208,12 @@ public class Input_Nicolet_Dialog implements ActionListener{
 									if(file.getPath().contains(".csv") || file.getPath().contains(".CSV")){ //If it is a .csv file
 										String[] record = tempRecord.split(",");
 										double temp = Double.parseDouble((record[1]));
-										tempArray[i] = temp;
+										if(i == 0 && temp == 0){flag = 1;}
+										if(i == 0 && temp != 0){flag = 2;}
+										if(i > 0 && flag == 1){
+											if( i > 129 && i < 1868){tempArray[i-130] = temp;}
+										}
+										if(i >0 && flag == 2){tempArray[i] = temp;}
 										i = i + 1;
 									}
 								}
