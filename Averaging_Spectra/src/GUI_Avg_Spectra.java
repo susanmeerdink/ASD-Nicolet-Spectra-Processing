@@ -78,7 +78,7 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 			private JButton buttonNext = new JButton("Next");
 			private JButton buttonBack = new JButton("Back");
 			private JButton buttonAvg = new JButton("Average the Displayed Files");
-			private JCheckBox checkLegend = new JCheckBox("Turn on Legend");
+			private JButton buttonLegend = new JButton("Turn on Legend");
 			
 				
 			//GUI Constructor
@@ -105,7 +105,7 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 				buttonNext.addActionListener(this);
 				buttonAvg.addActionListener(this);
 				buttonBack.addActionListener(this);
-				checkLegend.addActionListener(this);
+				buttonLegend.addActionListener(this);
 				
 				//Create Chart Items
 		        chart = createChart();
@@ -132,12 +132,8 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 		    	c.gridy = 0;
 		    	pane.add(allName,c); //Add Label for Not Displayed
 
-				c.gridx = 0;
-				c.gridy = 2;
-				pane.add(checkLegend, c); //check box that turns on and off legend
-
 		    	c.gridx = 0;
-		    	c.gridy = 3;
+		    	c.gridy = 2;
 		    	JLabel graphProp = new JLabel("Click and drag to zoom on a specific section. Right click to access chart properties, zooming options, print, save, and copy.");
 		    	pane.add(graphProp, c);
 		        
@@ -165,22 +161,27 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 				pane.add(buttonRight,c);// Add Button that moves things from displayed to Not displayed
 
 				c.gridx = 0;
-				c.gridy = 4;
+				c.gridy = 3;
 				c.anchor = GridBagConstraints.WEST;
 				pane.add(buttonBack,c);// Add Button that goes back a sample
 
 				c.gridx = 0;
-				c.gridy = 4;
+				c.gridy = 3;
 				c.anchor = GridBagConstraints.CENTER;
 				pane.add(buttonCancel,c);// Add Button that closes program
+
+				c.gridx = 0;
+				c.gridy = 3;
+				c.anchor = GridBagConstraints.EAST;
+				pane.add(buttonLegend, c); //check box that turns on and off legend
 				
 				c.gridx = 1;
-				c.gridy = 4;
+				c.gridy = 3;
 				c.anchor = GridBagConstraints.CENTER;
 				pane.add(buttonAvg,c);// Add Button that averages the spectra displayed
 				
 				c.gridx = 3;
-				c.gridy = 4;
+				c.gridy = 3;
 				c.anchor = GridBagConstraints.EAST;
 				pane.add(buttonNext,c);// Add Button that moves on to the next sample
 				
@@ -292,6 +293,13 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 								displaySpectra.add(allSpectra.get(k));
 							}
 						}
+						if (j > 20){ //If there are more than this number of spectra to be displayed remove the legend
+							legend.setVisible(false);
+							buttonLegend.setText("Turn on Legend");
+						} else{
+							legend.setVisible(true);
+							buttonLegend.setText("Turn off Legend");
+						}
 					}
 					if(displaySpectra.isEmpty()){
 						JOptionPane.showMessageDialog(frame,"Spectra file list does not match input filenames", "Input error",JOptionPane.ERROR_MESSAGE);
@@ -304,8 +312,10 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 						displaySpectra.add(allSpectra.get(i));
 						if (i > 20){ //If there are more than this number of spectra to be displayed remove the legend
 							legend.setVisible(false);
+							buttonLegend.setText("Turn on Legend");
 						} else{
 							legend.setVisible(true);
+							buttonLegend.setText("Turn off Legend");
 						}
 					}
 				}
@@ -392,10 +402,10 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 						}
 						if (dispListModel.getSize() > 20){ //If there are more than this number of spectra to be displayed remove the legend
 							legend.setVisible(false);
-							checkLegend.setSelected(false);
+							buttonLegend.setText("Turn on Legend");
 						} else{
 							legend.setVisible(true);
-							checkLegend.setSelected(true);
+							buttonLegend.setText("Turn off Legend");
 						}
 					}
 					//Use at the end to view averaged samples
@@ -436,10 +446,10 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 						}
 						if (dispListModel.getSize() > 20){ //If there are more than this number of spectra to be displayed remove the legend
 							legend.setVisible(false);
-							checkLegend.setSelected(false);
+							buttonLegend.setText("Turn on Legend");
 						} else{
 							legend.setVisible(true);
-							checkLegend.setSelected(true);
+							buttonLegend.setText("Turn off Legend");
 						}
 					}
 					//Use at the end to view averaged samples
@@ -453,10 +463,10 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 						}
 						if (dispListModel.getSize() > 20){ //If there are more than this number of spectra to be displayed remove the legend
 							legend.setVisible(false);
-							checkLegend.setSelected(false);
+							buttonLegend.setText("Turn on Legend");
 						} else{
 							legend.setVisible(true);
-							checkLegend.setSelected(true);
+							buttonLegend.setText("Turn off Legend");
 						}
 					}
 					//Call createDataset method so that the new samples can be displayed on chart
@@ -507,11 +517,13 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 				}
 
 				//Turns legend on and off
-				if(e.getSource() == checkLegend){
-					if(checkLegend.isSelected() == true){
+				if(e.getSource() == buttonLegend){
+					if(buttonLegend.getText().equals("Turn on Legend")){
 						legend.setVisible(true);
+						buttonLegend.setText("Turn off Legend");
 					}else{
 						legend.setVisible(false);
+						buttonLegend.setText("Turn on Legend");
 					}
 
 				}
