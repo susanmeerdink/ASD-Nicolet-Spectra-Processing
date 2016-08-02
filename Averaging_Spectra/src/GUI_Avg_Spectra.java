@@ -74,7 +74,7 @@ public class GUI_Avg_Spectra extends JPanel implements ActionListener {
 			//Member Variables for Buttons
 			private JButton buttonLeft = new JButton("<<");
 			private JButton buttonRight = new JButton(">>");
-			private JButton buttonCancel = new JButton("Cancel");
+			private JButton buttonCancel = new JButton("Exit");
 			private JButton buttonNext = new JButton("Next");
 			private JButton buttonBack = new JButton("Back");
 			private JButton buttonAvg = new JButton("Average the Displayed Files");
