@@ -244,6 +244,7 @@ public class Input_Nicolet_Dialog implements ActionListener{
 					String[] record;
 					for (String line : Files.readAllLines(Paths.get(selectfile.getSelectedFile().getPath()))){
 						record = line.split(","); //Split the line based on commas
+						//Note: if there are lines with just commas the following code will throw an error. Delete empty rows with commas and repeat.
 						if (record[0].isEmpty() == false){
 							String[] inputRecord = Arrays.copyOfRange(record, 1, record.length);
 							allSpectraFileList.add(new SpectraFileList(record[0],inputRecord)); //create a spectra object and add to allSpectra list
